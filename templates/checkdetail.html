@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block pagetitle %}{{ check.title }}{% endblock pagetitle %}
+{% block headerbar %}
+              <li><a href="{{ url_for('default') }}">Home</a></li>
+              <li><a href="{{ url_for('stigs') }}">STIGs</a></li>
+              <li class="active"><a href="{{ url_for('checks') }}">Checks</a></li>
+              <li><a href="{{ url_for('about') }}">About</a></li>
+{% endblock headerbar %}
+
+{% block body %}
+    <div class="row">
+      <div class="span8"><h2>{{ check.title }}</h2></div>
+      <div class="span2 offset2"><h4>{{check.findingid}} <br>({{ check.ruleID }})</h4></div>
+      
+    </div>
+  </div>
+    <div class="container">
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      
+        <h3 class="lead">Overview</h3>
+        <table class="table">
+          <thead>
+          <tr><th>Version</th><th>Rule ID</th><th>IA Controls</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>{{ check.version }}</td><td>{{ check.ruleID }}</td><td>{{ check.iacontrols}}</td></tr>
+          </tbody>
+        </table>
+        <table class="table">
+            <thead>
+              <tr><th>Check Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td> {{ check.description }} </td></tr>
+            </tbody>
+          </table>
+        
+      <div class="container">
+        <h3 class="lead">Details</h3>
+      <table class="table">
+            <thead>
+              <tr><th>Check Text ( {{ check.checktext }} )</th></tr>
+            </thead>
+            <tbody>
+              <tr><td> {{ check.checkid|replace("\n", "<br>")|safe }} </td></tr>
+            </tbody>
+          </table>
+                <table class="table">
+            <thead>
+              <tr><th>Fix Text ({{check.fixid}})</th></tr>
+            </thead>
+            <tbody>
+              <tr><td> {{ check.fixtext }} </td></tr>
+            </tbody>
+          </table>
+          <hr>
+{% include "disqus.html" %}
+    </div>
+{% endblock body %}
