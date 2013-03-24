@@ -19,6 +19,9 @@ importFile = controlsXML.getroot()
 iaControls = importFile.findall("{%s}IACONTROL" % xmlns)
 init_db()
 
+areas = {}
+impacts = {}
+count = 0
 for control in iaControls:
 	c = Control()
 	c.title = control.find("{%s}CONTROL_NUMBER" % xmlns).get('title')
@@ -47,7 +50,9 @@ test = u"""
     </MACCONF>
     <CONTROL_NAME>Alternate Site Designation</CONTROL_NAME>
     <SUBJECT_AREA>Continuity</SUBJECT_AREA>
-    <IMPACT_CODE>High</IMPACT_CODE>
-    <DESCRIPTION>An alternate site is identified that permits the restoration of all mission or business essential functions.</DESCRIPTION>
-    <THREAT>Environmental disasters, organized disruptions, loss of utilities/services, equipment or system failures, and serious information security incidents are potential events that could disrupt mission or business essential functions.  A recovery strategy should be developed to include an alternate site to mitigate the impact of disruptive events.</THREAT>
-    <GENERAL_IMPLEMENTATION_GUIDANCE/><SYSTEM_SPECIFIC_GUIDANCE_RESOURCES/>"""
+    <IMPACT_CODE>Medium</IMPACT_CODE>
+    <DESCRIPTION>An alternate site is identified that permits the partial restoration of mission or business essential functions.</DESCRIPTION>
+    <THREAT>Environmental disasters, organized disruptions, loss of utilities/services, equipment or system failures, and serious information security incidents are potential events that could disrupt mission or business essential functions.  A recovery strategy should be developed to include an alternate site to mitigate the impact of disruptive events.</THREAT>
+    <GENERAL_IMPLEMENTATION_GUIDANCE>
+datestr = benchmark.find("{%s}status" % xmlns).get("date")
+"""
