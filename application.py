@@ -14,20 +14,38 @@ def shutdown_session(exception=None):
     db_session.remove()
 @app.route("/")
 def default():
-	return "hi"
+	return redirect(url_for('allControls'))
 
 @app.route("/controls")
 def allControls():
-	c = Control.query.all()
-	titles = ""
-	for control in c:
-		titles = titles + "<br>" + control.title
+	subjects = {}
+	for subject in db_session.query(Control.subjectArea).distinct():
+		subjects[subject[0]] = []
 
-	return titles
+	for key in subjects.keys():
+		high = Control.query.filter_by(subjectArea=key).filter_by(impactCode='High').all()
+		med = Control.query.filter_by(subjectArea=key).filter_by(impactCode='Medium').all()
+		low = Control.query.filter_by(subjectArea=key).filter_by(impactCode='Low').all()
+		for item in high:
+			subjects[key].append(item)
+		for item in med:
+			subjects[key].append(item)		
+		for item in low:
+			subjects[key].append(item)
+	return render_template('8500list.html', controls = subjects)
 
 @app.route("/about")
 def about():
 	return render_template('about.html')
+
+@app.route('/control/<number>')
+def getControlDetail(number):
+
+	c = Control.query.filter_by(number = number.upper()).first()
+	if c:
+		return render_template('8500detail.html', control=c)
+	else:
+		return "No such control"
 	
 if __name__ == '__main__':
 	app.debug = True
