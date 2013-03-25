@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block pagetitle %}Complete 8500 Control List{% endblock pagetitle %}
+{% block headerbar %}
+              <li><a href="{{ url_for('default') }}">Home</a></li>
+              <li><a href="{{ url_for('about') }}">About</a></li>
+{% endblock headerbar %}
+
+{% block body %}
+  <h1>DOD Instruction 8500.2 Control LIst</h1>
+<ul>
+{% for subject in controls.keys() %}  
+    <li><a href="{{ url_for('allControls') }}#{{ subject }}"> {{ subject }}</a></li>
+{% endfor %}        
+</ul>
+{% for subject in controls.keys() %}    
+  
+  <h3>{{ subject }}<a name="{{subject}}">&nbsp</a></h3>      
+  <table class="table table-striped table-condensed table-hover">
+    <thead>
+      <tr><th width="10%">Control</th><th width="15%">Impact Code</th><th class="span2">Title</th></tr>
+    </thead>
+    <tbody>
+  
+      {% for control in controls[subject] %}
+  
+        <tr onClick="window.location = '{{ url_for('getControlDetail', number=control.number)}}'; return false;" style="cursor:pointer;">
+          <td><a href="{{ url_for('getControlDetail', number=control.number)}}">
+                {{ control.number }}</a></td>
+        
+          
+          {% if control.impactCode == 'Low' %}
+            {% set class="badge badge-info" %}            
+          {% elif control.impactCode == 'High' %}
+            {% set class="badge badge-important" %}
+          {% else %}
+            {% set class="badge badge-warning" %}
+          {% endif %}
+
+          <td><span class="{{ class }}">{{ control.impactCode }}</span></td>
+            <td> {{ control.title }}</td>
+        </tr>
+  
+      {% endfor %}
+  
+    </tbody>
+   </table>
+
+{% endfor %}
+{% endblock body %}

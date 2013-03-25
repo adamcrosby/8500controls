@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block pagetitle %}{{ control.number }}{% endblock pagetitle %}
+{% block headerbar %}
+              <li><a href="{{ url_for('default') }}">Home</a></li>
+              <li><a href="{{ url_for('about') }}">About</a></li>
+{% endblock headerbar %}
+
+{% block body %}
+    <div class="row">
+      <div class="span8"><h2>{{ control.title }}</h2></div>
+      <div class="span2 offset2"><h4>{{control.number}}</h4></div>
+      
+    </div>
+  </div>
+    <div class="container">
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      
+        <h3 class="lead">Overview</h3>
+        <p>{{ control.description}} </p>
+        <table class="table">
+          <thead>
+          <tr><th>Impact Code</th><th>MAC / CONF </th><th>Subject Area</th></tr>
+          </thead>
+          <tbody>
+          <tr>
+            {% if control.impactCode == 'Low' %}
+            <td><span class="badge badge-info">{{ control.impactCode }}</span></td>
+            {% elif control.impactCode == 'High' %}
+            <td><span class="badge badge-important">{{ control.impactCode }}</span></td>
+            {% else %}
+            <td><span class="badge badge-warning">{{ control.impactCode }}</span></td>
+            {% endif %}
+
+
+            <td>{{ control.CONF|replace("|", "<br>"|safe) }} {{ control.MAC|replace("|", "<br>"|safe) }}</td><td>{{ control.subjectArea}}</td></tr>
+          </tbody>
+        </table>
+        
+        
+      <div class="container">
+        <h3 class="lead">Details</h3>
+      <table class="table">
+            <thead>
+              <tr><th>Threat</th></tr>
+            </thead>
+            <tbody>
+              <tr><td> {{ control.threat|replace("\n", "<br>")|safe }} </td></tr>
+            </tbody>
+          </table>
+                <table class="table">
+            <thead>
+              <tr><th>Guidance</th></tr>
+            </thead>
+            <tbody>
+              <tr><td> {{ control.guidance|replace("\n", "<br>")|safe }} </td></tr>
+            </tbody>
+          </table>
+        <h3 class="lead">References</h3>
+          <ul>{{control.references | replace("·", "<li>")|safe}}</ul>
+          <hr>
+{% include "disqus.html" %}
+    </div>
+{% endblock body %}
