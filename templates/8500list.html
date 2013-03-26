@@ -6,18 +6,25 @@
 {% endblock headerbar %}
 
 {% block body %}
-  <h1>DOD Instruction 8500.2 Control LIst</h1>
-<ul>
-{% for subject in controls.keys() %}  
-    <li><a href="{{ url_for('allControls') }}#{{ subject }}"> {{ subject }}</a></li>
-{% endfor %}        
-</ul>
+  <h1>DOD Instruction 8500.2 Full Control LIst</h1>
+<div class="container well">
+	<div class="span3">
+	<ul class="nav">
+	{% for subject in controls.keys() %}  
+	    <li><a href="{{ url_for('allControls') }}#{{ subject }}"> {{ subject }}</a></li>
+	{% endfor %}        
+	</ul>
+	</div>
+	<div class="span2">
+	MAC I
+	</div>
+</div>
 {% for subject in controls.keys() %}    
   
   <h3>{{ subject }}<a name="{{subject}}">&nbsp</a></h3>      
-  <table class="table table-striped table-condensed table-hover">
+  <table class="table table-striped table-condensed table-hover" id="tbl_{{subject|replace(" ","")}}">
     <thead>
-      <tr><th width="10%">Control</th><th width="15%">Impact Code</th><th class="span2">Title</th></tr>
+      <tr><th width="10%">Control</th><th width="10%">Impact Code</th><th width="25%">Title</th><th>MAC or Confidentiality Level</tr>
     </thead>
     <tbody>
   
@@ -38,6 +45,7 @@
 
           <td><span class="{{ class }}">{{ control.impactCode }}</span></td>
             <td> {{ control.title }}</td>
+	    <td> {{ control.MAC|replace("|", ", "|safe) }}{{control.CONF|replace("|", ", "|safe)}} </td>
         </tr>
   
       {% endfor %}
@@ -46,4 +54,15 @@
    </table>
 
 {% endfor %}
+    <script src="{{ url_for("static", filename="js/jquery.tablesorter.min.js") }}"></script>
+    <script>
+    $(document).ready(function() 
+      { 
+        {% for subject in controls.keys() %}
+        $("#tbl_{{subject|replace(" ","")}}").tablesorter(); 
+        {% endfor %}
+      } 
+    );
+    </script> 
+   
 {% endblock body %}
