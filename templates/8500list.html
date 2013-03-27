@@ -10,13 +10,22 @@
 <div class="container well">
 	<div class="span3">
 	<ul class="nav">
+    <li>Jump To: </li>
 	{% for subject in controls.keys() %}  
 	    <li><a href="{{ url_for('allControls') }}#{{ subject }}"> {{ subject }}</a></li>
 	{% endfor %}        
 	</ul>
 	</div>
 	<div class="span2">
-	MAC I
+    <ul id="filters" class="nav">
+      <li>Filter by:</li>
+	    <li><a id="MACI" onclick="setMAC('MACI');">MAC I</a></li>
+      <li><a id="MACII" onclick="setMAC('MACII'); ">MAC II</a></li>
+    <li><a id="MACIII" onclick="setMAC('MACIII');">MAC III</a></li>
+  <li><a id="PUBLIC" onclick="setCONF('PUBLIC');">PUBLIC</a></li>
+  <li><a id="SENSITIVE" onclick="setCONF('SENSITIVE');">SENSITIVE</a></li>
+  <li><a id="CLASSIFIED" onclick="setCONF('CLASSIFIED');">CLASSIFIED</a></li>
+</ul>
 	</div>
 </div>
 {% for subject in controls.keys() %}    
@@ -30,7 +39,7 @@
   
       {% for control in controls[subject] %}
   
-        <tr onClick="window.location = '{{ url_for('getControlDetail', number=control.number)}}'; return false;" style="cursor:pointer;">
+        <tr onClick="window.location = '{{ url_for('getControlDetail', number=control.number)}}'; return false;" style="cursor:pointer;" class= "{{ control.MAC|replace("|", " "|safe) }}{{control.CONF|replace("|", " "|safe)}}">
           <td><a href="{{ url_for('getControlDetail', number=control.number)}}">
                 {{ control.number }}</a></td>
         
@@ -45,7 +54,7 @@
 
           <td><span class="{{ class }}">{{ control.impactCode }}</span></td>
             <td> {{ control.title }}</td>
-	    <td> {{ control.MAC|replace("|", ", "|safe) }}{{control.CONF|replace("|", ", "|safe)}} </td>
+	    <td> {{ control.MAC|replace("|", ", "|safe) }} {{control.CONF|replace("|", ", "|safe)}} </td>
         </tr>
   
       {% endfor %}
@@ -56,6 +65,8 @@
 {% endfor %}
     <script src="{{ url_for("static", filename="js/jquery.tablesorter.min.js") }}"></script>
     <script>
+    var global_mac = "";
+    var global_conf = "";
     $(document).ready(function() 
       { 
         {% for subject in controls.keys() %}
@@ -63,6 +74,35 @@
         {% endfor %}
       } 
     );
+    function hideRows(mac, conf){
+      var macstr = "[class~=" + mac + "]";
+      var confstr = "[class~=" + conf + "]";
+      var limac = "#" + global_mac;
+      var liconf = "#" + global_conf;
+      $('#filters > li > a').css('background-color', '');
+      $('#filters > li > a').css('color', '');
+      $(limac).css('background-color', '#66CCFF');    
+      $(limac).css('color', '#fff');    
+
+      $(liconf).css('background-color', '#66CCFF');
+      $(liconf).css('color', '#fff');    
+      
+      
+      
+
+      $('tbody tr').show()
+      $('tbody tr').not(confstr).not(macstr).hide()
+    };
+    function setMAC(mac){
+        global_mac = mac
+        hideRows(mac, global_conf);
+
+    };
+
+    function setCONF(conf){
+        global_conf = conf
+        hideRows(global_mac, conf);
+    };
     </script> 
    
 {% endblock body %}
