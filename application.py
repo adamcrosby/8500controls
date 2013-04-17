@@ -4,6 +4,7 @@ from datetime import date
 from flask import *
 from database import db_session
 from model import Control
+from search import *
 
 
 application = Flask(__name__)
@@ -46,6 +47,19 @@ def getControlDetail(number):
 		return render_template('8500detail.html', control=c)
 	else:
 		return "No such control"
+
+@app.route("/search")
+def search():
+        query = request.args.get('q')
+
+        if query == "" or query == None:
+                return render_template('nosearchresults.html', query=False)
+
+        searchResults = getSearchResults(query)
+        if searchResults == False:
+                return render_template('nosearchresults.html', query=query)
+        else:
+                return render_template('searchresults.html', results = searchResults, environ=request.environ, query=query)
 	
 if __name__ == '__main__':
 	app.debug = True

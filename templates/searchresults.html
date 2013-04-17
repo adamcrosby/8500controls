@@ -1,27 +1,38 @@
 {% extends 'base.html' %}
 {% block pagetitle %}Search Results{% endblock pagetitle %}
 {% block headerbar %}
-              <li><a href="/">Home</a></li>
-              <li><a href="{{ url_for('stigs') }}">STIGs</a></li>
-              <li><a href="{{ url_for('checks') }}">Checks</a></li>
+              <li><a href="{{ url_for('default') }}">Home</a></li>
               <li><a href="{{ url_for('about') }}">About</a></li>
 {% endblock headerbar %}
 {% block body %}
 <h2>Results for your search:</h2><br>
-<h3> Search Results for STIGs </h3>
-{% if not results['stigs'] %}
+<h3> Search Results for Control Name </h3>
+{% if not results['controls'] %}
 NONE
 {% else %}
 <ol>
-{% for result in results['stigs']|sort(attribute='title') %}
-	
+{% for result in results['controls']|sort(attribute='number') %}
+	{% if result.impactCode == 'Low' %}
+            {% set class="badge badge-info" %}            
+          {% elif result.impactCode == 'High' %}
+            {% set class="badge badge-important" %}
+          {% else %}
+            {% set class="badge badge-warning" %}
+          {% endif %}
+
+          
 		<li>
-			<h4><a href="{{ url_for('getStigOverview', stigid=result.pkid)}}">{{result.title }}</a></h4>
+			<h4>
+				<a href="{{ url_for('getControlDetail', number=result.number)}}"> 
+					[{{-result.number}}] - {{result.title }}</a> 
+					(<span class="{{ class }}">{{ result.impactCode }}</span> {{result.MAC|replace("|", ', ')}} {{result.CONF|replace("|", ', ')}})
+				
+			</h4>
 				<p>
-					<a href="{{ url_for('getStigOverview', stigid=result.pkid)}}">
+					<a href="{{ url_for('getControlDetail', number=result.number)}}">
 						{{environ['wsgi.url_scheme']}}://
 						{{-environ['HTTP_HOST']}}
-						{{-url_for('getStigOverview', stigid=result.pkid)}}
+						{{-url_for('getControlDetail', number=result.number)}}
 					</a>
 					<br>
 					<em>Description:</em>  {{result.description|truncate(250)|replace(query, "<b>"|safe + query + "</b>"|safe)}}
@@ -30,20 +41,27 @@ NONE
 {% endfor %}
 </ol>
 {% endif %}
-<h3> Search Results for Findings </h3>
-{% if not results['findings'] %}
+<h3> Search Results for Control Content</h3>
+{% if not results['content'] %}
 NONE
 {% else %}
 <ol>
-{% for result in results['findings']|sort(attribute='title') %}
+{% for result in results['content']|sort(attribute='number') %}
+{% if result.impactCode == 'Low' %}
+            {% set class="badge badge-info" %}            
+          {% elif result.impactCode == 'High' %}
+            {% set class="badge badge-important" %}
+          {% else %}
+            {% set class="badge badge-warning" %}
+          {% endif %}
 	
 		<li>
-			<h4><a href="{{ url_for('getCheck', checkid=result.findingid)}}"> ( {{-result.findingid}}) {{result.title}}</a></h4>
+			<h4><a href="{{ url_for('getControlDetail', number=result.number)}}"> <span class="{{ class }}">{{ result.impactCode }}</span>  ( {{-result.number}}) {{result.title}}</a></h4>
 				<p>
-					<a href="{{ url_for('getCheck', checkid=result.findingid)}}">
+					<a href="{{ url_for('getControlDetail', number=result.number)}}">
 						{{environ['wsgi.url_scheme']}}://
 						{{-environ['HTTP_HOST']}}
-						{{-url_for('getCheck', checkid=result.findingid)}}
+						{{-url_for('getControlDetail', number=result.number)}}
 					</a>
 					<br>
 					<em>Description:</em>  {{result.description|truncate(250)|replace(query, "<b>"|safe + query + "</b>"|safe)}}
