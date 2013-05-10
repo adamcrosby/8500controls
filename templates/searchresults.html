@@ -11,30 +11,45 @@
 NONE
 {% else %}
 <ol>
+{% set MACIclass="<span class=\"label label-warning\">MAC1</span>"|safe %}
+{% set MACIIclass="<span class=\"label label-success\">MAC2</span>"|safe %}
+{% set MACIIIclass="<span class=\"label\">MAC3</span>"|safe %}
+
+
+{% set CLASSIFIEDclass="<span class=\"label label-important\">CLASSIFIED</span>"|safe %}
+{% set PUBLICclass="<span class=\"label label-info\">PUBLIC</span>"|safe %}
+{% set SENSITIVEclass="<span class=\"label label-inverse\">SENSITIVE</span>"|safe %}
+
 {% for result in results['controls']|sort(attribute='number') %}
 	{% if result.impactCode == 'Low' %}
-            {% set class="badge badge-info" %}            
+            {% set impactClass="badge badge-info" %}            
           {% elif result.impactCode == 'High' %}
-            {% set class="badge badge-important" %}
+            {% set impactClass="badge badge-important" %}
           {% else %}
-            {% set class="badge badge-warning" %}
+            {% set impactClass="badge badge-warning" %}
           {% endif %}
 
           
 		<li>
-			<h4>
+			<h4><span class="{{ impactClass }}">{{ result.impactCode }}</span> 
 				<a href="{{ url_for('getControlDetail', number=result.number)}}"> 
 					[{{-result.number}}] - {{result.title }}</a> 
-					(<span class="{{ class }}">{{ result.impactCode }}</span> {{result.MAC|replace("|", ', ')}} {{result.CONF|replace("|", ', ')}})
+					
+					
 				
 			</h4>
 				<p>
-					<a href="{{ url_for('getControlDetail', number=result.number)}}">
-						{{environ['wsgi.url_scheme']}}://
-						{{-environ['HTTP_HOST']}}
-						{{-url_for('getControlDetail', number=result.number)}}
-					</a>
-					<br>
+					<table width="25%">
+						<tr>
+							<td>MAC Levels: </td>
+							<td>{{result.MAC|replace('MACIII', MACIIIclass)|replace('MACII', MACIIclass)|replace('MACI', MACIclass)|replace("|", ' ')}} </td>
+						</tr>
+						<tr>
+							<td>CONF Levels: </td>
+							<td>{{result.CONF|replace('CLASSIFIED', CLASSIFIEDclass)|replace('SENSITIVE', SENSITIVEclass)|replace('PUBLIC', PUBLICclass)|replace("|", ', ')}}</td>
+						</tr>
+					</table>
+				
 					<em>Description:</em>  {{result.description|truncate(250)|replace(query, "<b>"|safe + query + "</b>"|safe)}}
 				</p>
 		</li>
